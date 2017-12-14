@@ -1,0 +1,50 @@
+{
+  "name": "restdoc",
+  "version": "0.1.0",
+  "description": "Beautiful ui for restful api document",
+  "main": "lib/index.js",
+  "jsnext:main": "src/index.jsx",
+  "scripts": {
+    "flow": "flow --show-all-errors ./",
+    "eslint": "eslint --ext .jsx,.js ./",
+    "fix": "eslint --ext .jsx,.js --fix ./",
+    "prebuild": "rimraf lib",
+    "build": "babel -d lib src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maichong/restdoc.git"
+  },
+  "author": "Liang <liang@maichong.it> (https://github.com/liangxingchen)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maichong/restdoc/issues"
+  },
+  "homepage": "https://github.com/maichong/restdoc#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.3",
+    "babel-plugin-syntax-class-properties": "^6.13.0",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-flowtype": "^2.40.1",
+    "eslint-plugin-flowtype-errors": "^3.3.6",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.5.1",
+    "flow-bin": "^0.61.0",
+    "flow-declarations": "^0.1.4",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "mockjs": "^1.0.1-beta3",
+    "react": "^16.2.0"
+  }
+}
