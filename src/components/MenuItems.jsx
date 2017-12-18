@@ -83,6 +83,7 @@ export default class MenuItems extends React.Component<Props> {
           _.map(value.items, (item) => (
             <a key={item.id} href={this.getUrl(itemType, item.id)} className={`sub sub-${itemType}`}>
               {item.title}
+              {item.share ? <span className="v-required-icon text-danger">*</span> : ''}
             </a>
           ))
         }

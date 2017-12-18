@@ -38,7 +38,7 @@ type Props = {
   className?: string,
   isDownload?: boolean,
   callBackComponentUpdate?: Function|null, //报告父级组件已更新，等待父级判断是否还需要更新
-  shouldComponentUpdate?: boolean //是否需要更新组件 shouldComponentUpdate
+  isShouldComponentUpdate?: boolean //是否需要更新组件 shouldComponentUpdate
 };
 
 type State = {
@@ -62,7 +62,7 @@ export default class Index extends React.Component<Props, State> {
     menuBaseUrl: '',
     isDownload: false,
     callBackComponentUpdate: null,
-    shouldComponentUpdate: undefined //默认不定义，callBackComponentUpdate, shouldComponentUpdate同时存在才有效
+    isShouldComponentUpdate: undefined //默认不定义，callBackComponentUpdate, isShouldComponentUpdate同时存在才有效
   };
 
   constructor(props: Props) {
@@ -76,11 +76,11 @@ export default class Index extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    let { shouldComponentUpdate, callBackComponentUpdate } = nextProps;
+    let { isShouldComponentUpdate, callBackComponentUpdate } = nextProps;
     //父级控制更新
     if (typeof callBackComponentUpdate === 'function' && !callBackComponentUpdate
-      && typeof shouldComponentUpdate !== 'undefined') {
-      if (shouldComponentUpdate) {
+      && typeof isShouldComponentUpdate !== 'undefined') {
+      if (isShouldComponentUpdate) {
         if (!_.isEqual(this.props.fields, nextProps.fields)) {
           setFieldMaps(nextProps.fields);
         }
@@ -113,15 +113,15 @@ export default class Index extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    let { shouldComponentUpdate, callBackComponentUpdate } = this.props;
+    let { isShouldComponentUpdate, callBackComponentUpdate } = this.props;
     //父级控制更新
     if (typeof callBackComponentUpdate === 'function' && !callBackComponentUpdate
-      && typeof shouldComponentUpdate !== 'undefined') {
-      if (shouldComponentUpdate !== nextProps.shouldComponentUpdate) {
+      && typeof isShouldComponentUpdate !== 'undefined') {
+      if (isShouldComponentUpdate !== nextProps.isShouldComponentUpdate) {
         //更新父级
         callBackComponentUpdate();
       }
-      return shouldComponentUpdate;
+      return isShouldComponentUpdate;
     }
     //父级没控制更新，自行判断更新
     if (!_.isEqual(this.props.groups, nextProps.groups) ||
