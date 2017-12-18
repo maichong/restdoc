@@ -40,7 +40,7 @@ export default class MenuItems extends React.Component<Props> {
     }
   };
   //获取路由
-  getUrl = (type: string, id?: string) => {
+  getUrl = (type: string, id: string) => {
     let { baseUrl } = this.props;
     if (!id) {
       return baseUrl + '#' + type;
