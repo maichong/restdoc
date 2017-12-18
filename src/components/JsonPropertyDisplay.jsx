@@ -63,7 +63,7 @@ export default class JsonPropertyDisplay extends React.Component<Props> {
     } else if (_.isNumber(value)) {
       type = 'number';
     }
-    let specificType = ['object-empty', 'object', 'array', 'array-empty', 'string', 'null'];
+    let specificType = ['object-empty', 'object', 'array', 'array-empty', 'string', 'null', 'boolean'];
     let className = 'json-property';
     if (parseInt(level) > 1) className += ' collapsed';
     return (
@@ -105,6 +105,13 @@ export default class JsonPropertyDisplay extends React.Component<Props> {
             type === 'string' ?
               <div className="value string">
                 &quot;{value}&quot;&nbsp;
+                <span>{next ? ',' : ''}</span>
+              </div> : ''
+          }
+          {
+            type === 'boolean' ?
+              <div className="value boolean">
+                {value ? 'true' : 'false'}
                 <span>{next ? ',' : ''}</span>
               </div> : ''
           }
