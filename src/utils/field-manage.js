@@ -1,7 +1,45 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * @Created by Rong on 2017/11/17.
+ * @author Rong <chaorong@maichong.it>
+ */
+
 // @flow
 
 import _ from 'lodash';
+import type {
+  SimpleModelByFieldType,
+  ObjectModel,
+  Scope,
+  Tuple,
+  Route
+} from 'restdoc';
 
+let fieldMaps = {};
+/* 根据refId归类Field的Map图
+ * fields 所有的字段数组
+ * 返回数据 Field的Map图
+ * */
+export function setFieldMaps(fields: Array<Object>): Object {
+  if (!fields) {
+    throw new Error('fields is required in getFieldMapsByRefId');
+  }
+  let map = {};
+  _.map(fields, (f) => {
+    if (f.refId) {
+      if (!map[f.refId]) map[f.refId] = [];
+      map[f.refId].push(f);
+    }
+  });
+  fieldMaps = map;
+  return fieldMaps;
+}
+/**返回数据 Field的Map图
+* */
+export function getFieldMaps(): Object {
+  return fieldMaps;
+}
 /* 根据对象名获取Model
  * title model的title，例如 User$Base
  * type model的类型，例如 scope
@@ -9,7 +47,8 @@ import _ from 'lodash';
  * relationData 相关联的所有数据
  * 返回数据  返回一个模型的所有数据，例如User$Base里的数据
  * */
-function getModelByTitle(title: string, type: string, params: Object, relationData: Object): Object | null {
+function getModelByTitle(title: string, type:string, params: Object, relationData: Object):
+  ObjectModel|Scope|Tuple|null {
   if (!title) {
     throw new Error('title:string is required in getModelByTitle');
   }
@@ -68,8 +107,8 @@ function getModelByTitle(title: string, type: string, params: Object, relationDa
  hasFields: true //是否有字段数组
  };
  * */
-function getSimpleModelByFieldType(fieldType: string): Object {
-  if (!fieldType) return {};
+export function getSimpleModelByFieldType(fieldType: string): SimpleModelByFieldType|null {
+  if (!fieldType) return null;
   if (typeof fieldType !== 'string') {
     throw new Error('param is string in getSimpleModelByFieldType');
   }
@@ -85,8 +124,10 @@ function getSimpleModelByFieldType(fieldType: string): Object {
     if (typeArr && typeArr[1] !== 'string' && typeArr[1] !== 'number' && typeArr[1] !== 'object') {
       model.hasFields = true;
       let temp = getSimpleModelByFieldType(typeArr[1]);
-      model.modelType = temp.modelType;
-      model.modelTitle = temp.modelTitle;
+      if (temp) {
+        model.modelType = temp.modelType;
+        model.modelTitle = temp.modelTitle;
+      }
       return model;
     }
     model.modelType = typeArr ? typeArr[1] : '';
@@ -120,26 +161,13 @@ function getSimpleModelByFieldType(fieldType: string): Object {
     model.hasFields = true;
     return model;
   }
+  if (fieldType === '{}') {
+    model.fieldType = 'object';
+    model.hasFields = true;
+    return model;
+  }
   model.fieldType = fieldType;
   return model;
-}
-
-/* 根据refId归类Field的Map图
- * fields 所有的字段数组
- * 返回数据 Field的Map图
- * */
-function getFiledMapsByRefId(fields: Array<Object>): Object {
-  if (!fields) {
-    throw new Error('fields is required in getFiledMapsByRefId');
-  }
-  let map = {};
-  _.map(fields, (f) => {
-    if (f.refId) {
-      if (!map[f.refId]) map[f.refId] = [];
-      map[f.refId].push(f);
-    }
-  });
-  return map;
 }
 
 /* 获取字段类型中的模型，处理包含getSimpleModelByFieldType里的字段，好包含model在数据库里的数据
@@ -147,7 +175,7 @@ function getFiledMapsByRefId(fields: Array<Object>): Object {
  * relationData 相关联的所有数据
  * 返回数据 一个model所有数据，包括getSimpleModelByFieldType里的数据
  * */
-function getModelOfFieldType(field: Object, relationData: Object): Object | null {
+function getModelOfFieldType(field:Object, relationData:Object): Object|null {
   if (!field) {
     throw new Error('field is required in getModelOfFieldType');
   }
@@ -155,13 +183,15 @@ function getModelOfFieldType(field: Object, relationData: Object): Object | null
     throw new Error('relationData is required in getModelOfFieldType');
   }
   let model = getSimpleModelByFieldType(field.type || '');
-  let params = { project: field.project, library: field.library, version: field.version };
-  let title = model.modelTitle;
-  if (!model.hasFields && title && model.fieldType === 'ref') {
-    return Object.assign({}, model, getModelByTitle(title, model.modelType, params, relationData) || {});
-  }
-  if (model.hasFields && title) {
-    return Object.assign({}, model, getModelByTitle(title, model.modelType, params, relationData) || {});
+  if (model) {
+    let params = { project: field.project, library: field.library, version: field.version };
+    let title = model.modelTitle;
+    if (!model.hasFields && title && model.fieldType === 'ref') {
+      return Object.assign({}, model, getModelByTitle(title, model.modelType, params, relationData) || {});
+    }
+    if (model.hasFields && title) {
+      return Object.assign({}, model, getModelByTitle(title, model.modelType, params, relationData) || {});
+    }
   }
   return null;
 }
@@ -172,18 +202,16 @@ function getModelOfFieldType(field: Object, relationData: Object): Object | null
  * relationData 相关联的所有数据
  * 返回数据 返回一个整理后的field，其中增加了children对象，children里包含字段的子字段fields
  * */
-export function getFieldsOfModel(model: Object, relationData: Object, i?: number | null): Array<Object> {
+export function getFieldsOfModel(model:Object, relationData:Object, i?:number|null): Array<Object> {
   if (!i) i = 0;
   let results = [];
   if (i > 3) return results; //循环只能为2次
-  //获取字段的map图
-  let fieldMaps = getFiledMapsByRefId(relationData.fields);
   let modelType = '';
   //判断模型类型
   let s = getSimpleModelByFieldType(model.title);
   let list = [];
   //如果为scope，需要得到scope对应的object字段
-  if (s.modelType === 'scope') {
+  if (s && s.modelType === 'scope') {
     if (!model.object) return results;
     list = fieldMaps[model.object];
     modelType = s.modelType;
@@ -213,7 +241,7 @@ export function getFieldsOfModel(model: Object, relationData: Object, i?: number
 
       if (modelOfField) { //说明字段对应的为object、scope、tuple的对象或数字类型
         //引用类型&
-        if (simpleModel.fieldType === 'ref') {
+        if (simpleModel && simpleModel.fieldType === 'ref') {
           let disableFields = f.options && f.options.disabledFields ? f.options.disabledFields : [];
           //引用类型&user只显示一层，内部引用不显示
           if (disableFields && !i) {
@@ -226,9 +254,9 @@ export function getFieldsOfModel(model: Object, relationData: Object, i?: number
                   let temp = getSimpleModelByFieldType(sf.type || '');
                   //{ ref: f.ref } 引用的ref字段的ref应该为引用他的字段的ref 如route:body
                   if (f && f.ref) {
-                    results.push(Object.assign({}, sf, temp, { ref: f.ref }));
+                    results.push(Object.assign({}, sf, temp || {}, { ref: f.ref }));
                   } else {
-                    results.push(Object.assign({}, sf, temp));
+                    results.push(Object.assign({}, sf, temp || {}));
                   }
                 }
               });
@@ -242,7 +270,7 @@ export function getFieldsOfModel(model: Object, relationData: Object, i?: number
             { fields: getFieldsOfModel(modelOfField, relationData, i + 1) }
           );
           let temp = getSimpleModelByFieldType(f.type || '');
-          f = Object.assign({}, f, { children }, temp);
+          f = Object.assign({}, f, { children }, temp || {});
           results.push(f);
         }
       } else if (f.type === 'union') {
@@ -262,26 +290,25 @@ export function getFieldsOfModel(model: Object, relationData: Object, i?: number
               { fields: getFieldsOfModel(temp, relationData, i + 1) }
             );
             let sm = getSimpleModelByFieldType(imitateField.type || '');
-            f = Object.assign({}, f, { children }, sm);
+            f = Object.assign({}, f, { children }, sm || {});
             results.push(f);
           } else {
             let sm = getSimpleModelByFieldType(imitateField.type || '');
-            results.push(Object.assign({}, f, sm));
+            results.push(Object.assign({}, f, sm || {}));
           }
         } else {
           let sm = getSimpleModelByFieldType(f.type || '');
-          results.push(Object.assign({}, f, sm));
+          results.push(Object.assign({}, f, sm || {}));
         }
       } else {
         //其他类型字段
         let temp = getSimpleModelByFieldType(f.type || '');
-        results.push(Object.assign({}, f, temp));
+        results.push(Object.assign({}, f, temp || {}));
       }
     }
   });
   return results;
 }
-
 //-----------------------------end--------------------------------------------------
 
 //通过类型过滤字段
@@ -291,7 +318,7 @@ export function getFieldsOfModel(model: Object, relationData: Object, i?: number
  * params 要查找的model所对应的过滤条件，即所属项目，所属库，所属版本
  * relationData 相关联的所有数据
  * */
-export function filterRouteFieldsByType(type: string, fields: Array<Object>): Array<Object> {
+export function filterRouteFieldsByType(type: string, fields: Array<Object>):Array<Object> {
   switch (type) {
     case 'route:path': {
       return _.filter(fields, (item) => item.ref === 'route:path');
@@ -306,20 +333,19 @@ export function filterRouteFieldsByType(type: string, fields: Array<Object>): Ar
       return fields;
   }
 }
-
 /* 根据对象名获取Model
  * title model的title，例如 User$Base
  * type model的类型，例如 scope
  * params 要查找的model所对应的过滤条件，即所属项目，所属库，所属版本
  * relationData 相关联的所有数据
  * */
-export function getFieldsOfBody(route: Object, relationData: Object): Object | null {
+export function getFieldsOfBody(route: Route, relationData:Object):Object|null {
   if (!route.bodyType) return null;
   if (route.bodyType !== '{}') {
     let simpleModel = getSimpleModelByFieldType(route.bodyType);
-    if (!simpleModel.modelTitle) return null;
-    if (route.project) route.project = route.library.split('/')[0];
-    let params = { project: route.project, library: route.library, version: route.version };
+    if (!simpleModel || !simpleModel.modelTitle) return null;
+    let project = route.project || route.library.split('/')[0];
+    let params = { project, library: route.library, version: route.version };
     let model = getModelByTitle(simpleModel.modelTitle, simpleModel.modelType, params, relationData);
     if (!model) return null;
     let fields = getFieldsOfModel(model, relationData);
@@ -332,21 +358,20 @@ export function getFieldsOfBody(route: Object, relationData: Object): Object | n
   }
   return null;
 }
-
 /* 根据对象名获取Model
  * title model的title，例如 User$Base
  * type model的类型，例如 scope
  * params 要查找的model所对应的过滤条件，即所属项目，所属库，所属版本
  * relationData 相关联的所有数据
  * */
-export function getFieldsOfResponse(route: Object, relationData: Object): Array<Object> {
+export function getFieldsOfResponse(route: Route, relationData:Object):Array<Object> {
   let responses = [];
   _.map(relationData.responses, (response) => {
-    if (route.id === response.route) {
+    if (route.id && response.route && route.id.toString() === response.route.toString()) {
       if (!response.type) return;
       if (response.type !== '{}') {
         let simpleModel = getSimpleModelByFieldType(response.type);
-        if (!simpleModel.modelTitle) return;
+        if (!simpleModel || !simpleModel.modelTitle) return;
         if (response.project) response.project = response.library.split('/')[0];
         let params = { project: response.project, library: response.library, version: response.version };
         let model = getModelByTitle(simpleModel.modelTitle, simpleModel.modelType, params, relationData);
@@ -360,4 +385,39 @@ export function getFieldsOfResponse(route: Object, relationData: Object): Array<
     }
   });
   return responses;
+}
+
+/*解析fields为json
+ fields  字段列表
+ modelType 字段引用的model类型
+ fieldType 字段要返回的类型
+ * */
+export function parseFieldJson(fields: Array<Object>, modelType: string, fieldType: string):any {
+  // console.error('fields:', fields);
+  // console.error('type:', modelType);
+  let data = {};
+  if (modelType === 'tuple') {
+    data = [];
+    _.map(fields, (f) => {
+      if (f.children && f.children.fields) {
+        let children = f.children;
+        data.push(parseFieldJson(children.fields, children.modelType, children.fieldType));
+        return;
+      }
+      let tmp = f.mockResult;
+      data.push(tmp);
+    });
+    return data;
+  }
+  _.map(fields, (f) => {
+    if (f.children && f.children.fields) {
+      let children = f.children;
+      data[f.title] = parseFieldJson(f.children.fields, children.modelType, children.fieldType);
+      return;
+    }
+    let tmp = f.mockResult;
+    data[f.title] = tmp;
+  });
+  if (fieldType === 'array') return [data];
+  return data;
 }

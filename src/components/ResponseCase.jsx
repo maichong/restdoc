@@ -1,3 +1,10 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/17.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import React from 'react';
@@ -8,8 +15,8 @@ type Props = {
   className?: string;
   title: string;
   value: Array<{
-    code: number,
-    desc: string,
+    code:number,
+    desc:string,
     fields: Array<Object>;
     // 数组中为Field对象，同时在对象中增加了{children:{...model, fields: []}},
     // model为Object、Tuple、Scope的字段
@@ -25,7 +32,7 @@ export default class ResponseCase extends React.Component<Props, State> {
     className: ''
   };
 
-  constructor(props: Object) {
+  constructor(props:Object) {
     super(props);
     this.state = {
       response: props.value && props.value.length ? props.value[0] : {}
@@ -37,16 +44,21 @@ export default class ResponseCase extends React.Component<Props, State> {
     let { response } = this.state;
     if (!value || !value.length) return <div />;
     // console.error('=======response', response);
+    // console.log('======ResponseCase');
     return (
       <div className={className ? className + ' response-case' : 'response-case'}>
         <div className="model-case-title">{title}</div>
         <div className="tabs">
           {
             _.map(value, (r, index) => (
-              <div className="tab" key={index} onClick={() => this.setState({ response: r })}>
+              <div
+                className={r.id === response.id ? 'tab active' : 'tab'}
+                key={index}
+                onClick={() => this.setState({ response: r })}
+              >
                 <i className={
                   _.isNumber(r.code) && r.code <= 400 && r.code >= 200 ?
-                    'fa fa-circle text-success' : 'fa fa-circle text-danger'
+                  'fa fa-circle text-success' : 'fa fa-circle text-danger'
                 }
                 />
                 <span className="tab-code">{r.code}</span>
@@ -55,12 +67,14 @@ export default class ResponseCase extends React.Component<Props, State> {
             ))
           }
         </div>
-        {
-          response.fields && response.fields.length ?
-            <div className="case-data-panel">
-              <CaseDataDisplay wrapType={response.fieldType} type={response.modelType} value={response.fields} />
-            </div> : null
-        }
+        <div className="case-data-panel">
+          <CaseDataDisplay
+            defaultJson={{}}
+            wrapType={response.fieldType}
+            type={response.modelType}
+            value={response.fields || []}
+          />
+        </div>
       </div>
     );
   }

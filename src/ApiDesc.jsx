@@ -1,11 +1,21 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/17.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import React from 'react';
+import type {
+  Description
+} from 'restdoc';
 import BaseInfo from './components/BaseInfo';
 
 type Props = {
   className?: string,
-  value: Object
+  value: Description
 };
 
 export default class ApiDesc extends React.Component<Props> {
@@ -19,6 +29,7 @@ export default class ApiDesc extends React.Component<Props> {
     if (this.props.className) {
       className = className + ' ' + this.props.className;
     }
+    // console.log('======ApiDesc');
     return (
       <div className={className} id={'description-' + value.id}>
         <BaseInfo className="panel-left" title={value.title} desc={value.desc} />

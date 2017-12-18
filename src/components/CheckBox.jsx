@@ -1,3 +1,9 @@
+/**
+ * @copyright Maichong Software Ltd. 2016 http://maichong.it
+ * @date 2016-12-23
+ * @author Li <li@maichong.it>
+ */
+
 // @flow
 
 import React from 'react';
@@ -16,13 +22,6 @@ export default class CheckBox extends React.Component<Props> {
     checked: false,
     label: '',
     disabled: false
-  };
-
-  handleCheck = () => {
-    const { onChange, checked } = this.props;
-    if (onChange) {
-      onChange(!checked);
-    }
   };
 
   render() {
@@ -50,9 +49,9 @@ export default class CheckBox extends React.Component<Props> {
     } else {
       //icon = 'square-o';
     }
-
+    // console.log('======CheckBox');
     return (
-      <label className={className} onClick={disabled ? null : this.handleCheck}>
+      <label className={className}>
         <i className={'fa fa-' + icon} />
         {label}
       </label>

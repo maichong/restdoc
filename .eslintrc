@@ -9,6 +9,7 @@
   "parser": "babel-eslint",
   "plugins": ["flowtype", "flowtype-errors"],
   "rules": {
+    "jsx-a11y/click-events-have-key-events": 0,
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
     "flowtype-errors/show-errors": 2,

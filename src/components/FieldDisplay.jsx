@@ -1,11 +1,21 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/17.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import React from 'react';
 import _ from 'lodash';
+import { getSimpleModelByFieldType } from '../utils/field-manage';
 
 type Props = {
   className?: string,
   baseUrl?: string,
+  type?: string,
+  showType?: boolean,
   value: Array<Object>
   // 数组中为Field对象，同时在对象中增加了{children:{...model, fields: []}},
   // model为Object、Tuple、Scope的字段
@@ -13,7 +23,10 @@ type Props = {
 
 export default class FieldDisplay extends React.Component<Props> {
   static defaultProps = {
-    className: ''
+    className: '',
+    baseUrl: '',
+    type: '',
+    showType: true
   };
 
   getTypeDisplay = (f: Object): Object => {
@@ -21,19 +34,34 @@ export default class FieldDisplay extends React.Component<Props> {
     if (f.modelTitle && f.type !== 'union') {
       let { baseUrl } = this.props;
       let url = (baseUrl || '') + '#' + f.modelType + '-' + f.children.id;
-      return <a key={f.id} href={url}>{f.type}</a>;
+      return <span className="type padding-right-xs"><a href={url}>{f.type}</a></span>;
     }
-    return <span>{f.type}</span>;
+    return <span className="type padding-right-xs">{f.type}</span>;
   };
-
   render() {
-    let { className, value } = this.props;
+    let {
+      className, value, type, showType
+    } = this.props;
     // console.log('======value:', value);
     if (!value || !value.length) return <div />;
+    // console.log('======FieldDisplay');
+    let model = null;
+    let borderType = 'object';
+    //通过类型获取一个简单模型
+    if (type) {
+      model = getSimpleModelByFieldType(type);
+      if (model && (model.fieldType === 'array' || model.modelType === 'tuple')) {
+        borderType = 'array';
+      }
+    }
     return (
       <div className={className ? className + ' field-display' : 'field-display'}>
         <div className="list">
-          <div className="list-left-border" />
+          {
+            showType && model && model.modelTitle ?
+              <div className="field-type">{type}</div> : null
+          }
+          <div className={'list-left-border ' + borderType} />
           <div className="list-items">
             {
               _.map((value || []), (field) => (
@@ -42,18 +70,15 @@ export default class FieldDisplay extends React.Component<Props> {
                     field.title ? <div className="item-title">{field.title}</div> : null
                   }
                   <div className="item-options">
-                    <div>
-                      <span className="type">
-                        {
-                          this.getTypeDisplay(field)
-                        }
-                      </span>
-                      <span className="text-danger">
-                        {field.options && field.options.required ? '必须' : ''}
-                      </span>
-                    </div>
-                    <div className="desc">{field.desc || ''}</div>
-                    <div className="help-block">
+                    <div className="options">
+                      {
+                        this.getTypeDisplay(field)
+                      }
+                      {field.options && field.options.required ?
+                        <span className="text-danger padding-right-xs">
+                          必须
+                        </span> : ''
+                      }
                       {field.default ?
                         <span className="padding-right-xs">
                           {'默认值:' + field.default}
@@ -67,25 +92,26 @@ export default class FieldDisplay extends React.Component<Props> {
                       }
                       {field.options && field.options.format ?
                         <span className="padding-right-xs">
-                          {'格式:' + field.options.format}
+                          {'格式:' + field.options.format }
                         </span> : ''
                       }
                       {field.options && field.options.regular ?
                         <span className="padding-right-xs">
-                          {'正则:' + field.options.regular}
+                          {'正则:' + field.options.regular }
                         </span> : ''
                       }
                       {field.type === 'enum' && field.options && field.options.enumValue ?
                         <span className="padding-right-xs">
-                          {'可选值:' + JSON.stringify(field.options.enumValue)}
+                          {'可选值:' + JSON.stringify(field.options.enumValue) }
                         </span> : ''
                       }
                       {field.type === 'union' && field.options && field.options.unionType ?
                         <span className="padding-right-xs">
-                          {'可选类型:' + field.options.unionType.join(',')}
+                          {'可选类型:' + field.options.unionType.join(',') }
                         </span> : ''
                       }
                     </div>
+                    <div className="desc">{field.desc || ''}</div>
                   </div>
                 </div>
               ))

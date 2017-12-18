@@ -1,7 +1,20 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/17.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import _ from 'lodash';
 import React from 'react';
+import type {
+  ObjectModel,
+  Tuple,
+  Field,
+  Scope
+} from 'restdoc';
 import BaseInfo from './components/BaseInfo';
 import FieldDisplay from './components/FieldDisplay';
 import ModelCase from './components/ModelCase';
@@ -11,12 +24,12 @@ import { getFieldsOfModel } from './utils/field-manage';
 type Props = {
   baseUrl?: string,
   className?: string,
-  value: Object,
+  value: ObjectModel,
   relation: {
-    objects: Array<Object>,
-    tuples: Array<Object>,
-    fields: Array<Object>,
-    scopes: Array<Object>
+    objects: Array<ObjectModel>,
+    tuples: Array<Tuple>,
+    fields: Array<Field>,
+    scopes: Array<Scope>
   }
 };
 
@@ -28,7 +41,7 @@ export default class ApiObject extends React.Component<Props> {
 
   getScopes() {
     let { value, relation } = this.props;
-    return _.filter(relation.scopes, (s) => s.object === value.id);
+    return _.filter(relation.scopes, (s) => s.object && value.id && s.object.toString() === value.id.toString());
   }
 
   render() {
@@ -39,6 +52,7 @@ export default class ApiObject extends React.Component<Props> {
     }
     let fields = getFieldsOfModel(value, relation);
     let scopes = this.getScopes();
+    // console.log('======ApiObject');
     return (
       <div className={className} id={'object-' + value.id}>
         <div className="panel-left">
@@ -47,7 +61,7 @@ export default class ApiObject extends React.Component<Props> {
             fields && fields.length ?
               <div className="object">
                 <div className="padding-sm-v">属性</div>
-                <FieldDisplay baseUrl={this.props.baseUrl} value={fields} />
+                <FieldDisplay type={value.title} showType={false} baseUrl={this.props.baseUrl} value={fields} />
               </div> : null
           }
           {

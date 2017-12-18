@@ -1,3 +1,10 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/12/3.
+ * chaorong@maichong.it
+ */
+
 import React from 'react';
 
 type Props = {
@@ -7,6 +14,7 @@ type Props = {
 export default class ApiSearch extends React.Component<Props> {
   render() {
     let { onChange } = this.props;
+    // console.log('======ApiSearch');
     return (
       <div className="api-search">
         {

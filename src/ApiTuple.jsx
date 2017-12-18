@@ -1,6 +1,19 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/17.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import React from 'react';
+import type {
+  ObjectModel,
+  Tuple,
+  Field,
+  Scope
+} from 'restdoc';
 import BaseInfo from './components/BaseInfo';
 import FieldDisplay from './components/FieldDisplay';
 import ModelCase from './components/ModelCase';
@@ -9,12 +22,12 @@ import { getFieldsOfModel } from './utils/field-manage';
 type Props = {
   baseUrl?: string,
   className?: string,
-  value: Object,
+  value: Tuple,
   relation: {
-    objects: Array<Object>,
-    tuples: Array<Object>,
-    fields: Array<Object>,
-    scopes: Array<Object>
+    objects: Array<ObjectModel>,
+    tuples: Array<Tuple>,
+    fields: Array<Field>,
+    scopes: Array<Scope>
   }
 };
 
@@ -31,6 +44,7 @@ export default class ApiTuple extends React.Component<Props> {
       className = className + ' ' + this.props.className;
     }
     let fields = getFieldsOfModel(value, relation);
+    // console.log('======ApiTuple');
     return (
       <div
         className={className}
@@ -47,7 +61,12 @@ export default class ApiTuple extends React.Component<Props> {
             fields && fields.length ?
               <div className="tuple">
                 <div className="padding-sm-v">属性</div>
-                <FieldDisplay baseUrl={this.props.baseUrl} value={fields} />
+                <FieldDisplay
+                  type={'[' + value.title + ']'}
+                  showType={false}
+                  baseUrl={this.props.baseUrl}
+                  value={fields}
+                />
               </div> : null
           }
         </div>

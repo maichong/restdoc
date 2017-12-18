@@ -1,3 +1,10 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/26.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import React from 'react';
@@ -20,6 +27,7 @@ export default class RouteMethodDisplay extends React.Component<Props> {
       className = className + ' ' + this.props.className;
     }
     if (!method) return <div />;
+    // console.log('======RouteMethodDisplay');
     return (
       <div className={className}>
         <div className="method">{method}</div>

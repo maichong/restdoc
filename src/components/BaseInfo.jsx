@@ -1,10 +1,17 @@
+/**
+ * 脉冲软件
+ * http://maichong.it
+ * Created by Rong on 2017/11/17.
+ * chaorong@maichong.it
+ */
+
 // @flow
 
 import React from 'react';
 
 type Props = {
   className?: string,
-  markEle?: Object | null, //Element 对标题进行标记的html格式
+  markEle?: Object|null, //Element 对标题进行标记的html格式
   title: string,
   isSub?: boolean,
   share?: boolean,
@@ -30,6 +37,7 @@ export default class BaseInfo extends React.Component<Props> {
     if (this.props.isSub) {
       className += ' sub-info';
     }
+    // console.log('======BaseInfo');
     return (
       <div className={className}>
         <div className="title">
