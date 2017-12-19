@@ -1,6 +1,6 @@
 {
   "name": "restdoc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Beautiful ui for restful api document",
   "main": "lib/index.js",
   "jsnext:main": "src/index.jsx",
