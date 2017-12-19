@@ -8,6 +8,7 @@
 // @flow
 
 import React from 'react';
+import marked from 'marked';
 
 type Props = {
   className?: string,
@@ -49,7 +50,9 @@ export default class BaseInfo extends React.Component<Props> {
         {
           markEle ? <div className="mark">{markEle}</div> : null
         }
-        <div className="desc">{desc}</div>
+        {
+          desc ? <div dangerouslySetInnerHTML={{ __html: marked(desc) }} className="desc" /> : null
+        }
       </div>
     );
   }

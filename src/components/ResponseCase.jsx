@@ -52,12 +52,12 @@ export default class ResponseCase extends React.Component<Props, State> {
           {
             _.map(value, (r, index) => (
               <div
-                className={r.id === response.id ? 'tab active' : 'tab'}
+                className={r.id === response.id ? 'code-tab tab active' : 'code-tab tab'}
                 key={index}
                 onClick={() => this.setState({ response: r })}
               >
                 <i className={
-                  _.isNumber(r.code) && r.code <= 400 && r.code >= 200 ?
+                  _.isNumber(r.code) && r.code < 400 && r.code >= 200 ?
                   'fa fa-circle text-success' : 'fa fa-circle text-danger'
                 }
                 />

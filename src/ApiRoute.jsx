@@ -151,7 +151,7 @@ export default class ApiRoute extends React.Component<Props> {
                     <div className="padding-top" key={r.id}>
                       <div
                         className={
-                          _.isNumber(r.code) && r.code <= 400 && r.code >= 200 ?
+                          _.isNumber(r.code) && r.code < 400 && r.code >= 200 ?
                           'code-desc text-success' : 'code-desc text-danger'
                         }
                       >
