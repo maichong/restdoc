@@ -22,7 +22,7 @@ import FieldDisplay from './components/FieldDisplay';
 import ResponseCase from './components/ResponseCase';
 import RequestCase from './components/RequestCase';
 import RouteMethodDisplay from './components/RouteMethodDisplay';
-import { getFieldsOfModel, filterRouteFieldsByType, getFieldsOfBody, getFieldsOfResponse } from './utils/field-manage';
+import { getFieldsOfModel, filterRouteFieldsByType, getBodyFieldsOfRoute, getResponsesOfRoute } from './utils/field-manage';
 
 type Props = {
   className?: string,
@@ -96,8 +96,8 @@ export default class ApiRoute extends React.Component<Props> {
     let fields = getFieldsOfModel(value, relation);
     let fieldsRoutePath = filterRouteFieldsByType('route:path', fields);
     let fieldsRouteQuery = filterRouteFieldsByType('route:query', fields);
-    let fieldsRouteBody = getFieldsOfBody(value, relation);
-    let responseArr = getFieldsOfResponse(value, relation);
+    let fieldsRouteBody = getBodyFieldsOfRoute(value, relation);
+    let responseArr = getResponsesOfRoute(value, relation);
     responseArr = _.orderBy(responseArr, ['code'], ['asc']);
     // console.log('======ApiRoute');
     return (

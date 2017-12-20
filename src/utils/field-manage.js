@@ -36,7 +36,7 @@ export function setFieldMaps(fields: Array<Object>): Object {
   return fieldMaps;
 }
 /**返回数据 Field的Map图
-* */
+ * */
 export function getFieldMaps(): Object {
   return fieldMaps;
 }
@@ -47,7 +47,7 @@ export function getFieldMaps(): Object {
  * relationData 相关联的所有数据
  * 返回数据  返回一个模型的所有数据，例如User$Base里的数据
  * */
-function getModelByTitle(title: string, type:string, params: Object, relationData: Object):
+export function getModelByTitle(title: string, type:string, params: Object, relationData: Object):
   ObjectModel|Scope|Tuple|null {
   if (!title) {
     throw new Error('title:string is required in getModelByTitle');
@@ -175,7 +175,7 @@ export function getSimpleModelByFieldType(fieldType: string): SimpleModelByField
  * relationData 相关联的所有数据
  * 返回数据 一个model所有数据，包括getSimpleModelByFieldType里的数据
  * */
-function getModelOfFieldType(field:Object, relationData:Object): Object|null {
+export function getModelOfFieldType(field:Object, relationData:Object): Object|null {
   if (!field) {
     throw new Error('field is required in getModelOfFieldType');
   }
@@ -197,9 +197,10 @@ function getModelOfFieldType(field:Object, relationData:Object): Object|null {
 }
 
 //
-/* 获取对象的字段
+/* 获取模型对象的字段列表
  * model model数据，例如 User$Base里所有数据
  * relationData 相关联的所有数据
+ * i number 循环次数
  * 返回数据 返回一个整理后的field，其中增加了children对象，children里包含字段的子字段fields
  * */
 export function getFieldsOfModel(model:Object, relationData:Object, i?:number|null): Array<Object> {
@@ -309,14 +310,10 @@ export function getFieldsOfModel(model:Object, relationData:Object, i?:number|nu
   });
   return results;
 }
-//-----------------------------end--------------------------------------------------
 
-//通过类型过滤字段
-/* 根据对象名获取Model
+/* 通过类型过滤route字段类型
  * title model的title，例如 User$Base
- * type model的类型，例如 scope
- * params 要查找的model所对应的过滤条件，即所属项目，所属库，所属版本
- * relationData 相关联的所有数据
+ * fields route字段列表
  * */
 export function filterRouteFieldsByType(type: string, fields: Array<Object>):Array<Object> {
   switch (type) {
@@ -333,13 +330,11 @@ export function filterRouteFieldsByType(type: string, fields: Array<Object>):Arr
       return fields;
   }
 }
-/* 根据对象名获取Model
- * title model的title，例如 User$Base
- * type model的类型，例如 scope
- * params 要查找的model所对应的过滤条件，即所属项目，所属库，所属版本
+/* 获取路由的body的字段列表，字段已处理成树状结构
+ * route object
  * relationData 相关联的所有数据
  * */
-export function getFieldsOfBody(route: Route, relationData:Object):Object|null {
+export function getBodyFieldsOfRoute(route: Route, relationData:Object):Object|null {
   if (!route.bodyType) return null;
   if (route.bodyType !== '{}') {
     let simpleModel = getSimpleModelByFieldType(route.bodyType);
@@ -358,13 +353,11 @@ export function getFieldsOfBody(route: Route, relationData:Object):Object|null {
   }
   return null;
 }
-/* 根据对象名获取Model
- * title model的title，例如 User$Base
- * type model的类型，例如 scope
- * params 要查找的model所对应的过滤条件，即所属项目，所属库，所属版本
+/* 获取路由的返回值列表，返回值的字段已处理成树状结构
+ * route object
  * relationData 相关联的所有数据
  * */
-export function getFieldsOfResponse(route: Route, relationData:Object):Array<Object> {
+export function getResponsesOfRoute(route: Route, relationData:Object):Array<Object> {
   let responses = [];
   _.map(relationData.responses, (response) => {
     if (route.id && response.route && route.id.toString() === response.route.toString()) {
@@ -391,6 +384,7 @@ export function getFieldsOfResponse(route: Route, relationData:Object):Array<Obj
  fields  字段列表
  modelType 字段引用的model类型
  fieldType 字段要返回的类型
+ 例如：Project[], modelType为object, fieldType为array
  * */
 export function parseFieldJson(fields: Array<Object>, modelType: string, fieldType: string):any {
   // console.error('fields:', fields);

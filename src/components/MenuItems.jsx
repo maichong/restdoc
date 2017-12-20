@@ -11,7 +11,7 @@ import _ from 'lodash';
 type Props = {
   className?: string,
   baseUrl?: string, //基础路由 例如 /[projectId]/api/[libraryPath]/[version]
-  type: string, //菜单类型 object、tuple、group
+  type: string, //菜单类型 object、tuple、group、code
   value: {
     title: string,
     id: string,
@@ -22,7 +22,6 @@ type Props = {
 export default class MenuItems extends React.Component<Props> {
   static defaultProps = {
     className: '',
-    mode: 'view',
     baseUrl: ''
   };
 
@@ -54,7 +53,9 @@ export default class MenuItems extends React.Component<Props> {
     let className = 'menu';
     if (this.props.className) className = +' ' + this.props.className;
     if (!value) return <div />;
-    if (!value.id && (!value.items || !value.items.length)) return <div />;
+    // if (type && type.toString() !== 'code') {
+    //   if (!value.id && (!value.items || !value.items.length)) return <div />;
+    // }
     // console.log('======MenuItems');
 
     return (

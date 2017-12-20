@@ -12,8 +12,7 @@ type Props = {
   radio: boolean,
   checked: boolean,
   label: string,
-  disabled: boolean,
-  onChange: Function
+  disabled: boolean
 };
 
 export default class CheckBox extends React.Component<Props> {

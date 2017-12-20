@@ -33,7 +33,7 @@ export default class ApiCode extends React.Component<Props> {
       <div className={className} id="code">
         <div className="panel-left">
           <div className="title">状态码</div>
-          <table className="table table-bordered" responsive>
+          <table className="table table-bordered">
             <tbody className="desc">
               <tr>
                 <td className="text-center" width="100">状态码</td>
