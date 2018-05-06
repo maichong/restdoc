@@ -1,15 +1,17 @@
 [ignore]
 .*/build/.*
 .*/lib/.*
+.*/.history/.*
 .*/node_modules/.*
-node_modules/.*
+.*/flow-declarations/.*
 
 [libs]
-flow/
-node_modules/flow-declarations/flow
+node_modules/flow-declarations/restdoc
+node_modules/flow-declarations/lodash
+node_modules/flow-declarations/marked
 
 [options]
+include_warnings=true
 suppress_comment= \\(.\\|\n\\)*\\$Flow
-unsafe.enable_getters_and_setters=true
 esproposal.decorators=ignore
 esproposal.export_star_as=enable
