@@ -23,12 +23,11 @@
   "homepage": "https://github.com/maichong/restdoc#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.2.3",
     "babel-plugin-syntax-class-properties": "^6.13.0",
     "babel-plugin-syntax-export-extensions": "^6.13.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -37,18 +36,14 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-flowtype": "^2.46.3",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
-    "flow-bin": "^0.71.0",
-    "flow-declarations": "^0.4.4",
+    "eslint-config-maichong": "^1.0.1",
+    "flow-bin": "^0.75.0",
+    "flow-declarations": "^0.4.20",
     "rimraf": "^2.6.2"
   },
   "dependencies": {
     "lodash": "^4.17.10",
-    "marked": "^0.3.19",
+    "marked": "^0.4.0",
     "mockjs": "^1.0.1-beta3",
     "react": "^16.3.2"
   }

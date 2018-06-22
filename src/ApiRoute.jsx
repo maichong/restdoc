@@ -22,7 +22,12 @@ import FieldDisplay from './components/FieldDisplay';
 import ResponseCase from './components/ResponseCase';
 import RequestCase from './components/RequestCase';
 import RouteMethodDisplay from './components/RouteMethodDisplay';
-import { getFieldsOfModel, filterRouteFieldsByType, getBodyFieldsOfRoute, getResponsesOfRoute } from './utils/field-manage';
+import {
+  getFieldsOfModel,
+  filterRouteFieldsByType,
+  getBodyFieldsOfRoute,
+  getResponsesOfRoute
+} from './utils/field-manage';
 
 type Props = {
   className?: string,
@@ -43,7 +48,7 @@ export default class ApiRoute extends React.Component<Props> {
     baseUrl: '',
   };
 
-  getMarkEle():Object {
+  getMarkEle(): Object {
     let { value } = this.props;
     let stability = '';
     if (value.stability) {
@@ -152,7 +157,7 @@ export default class ApiRoute extends React.Component<Props> {
                       <div
                         className={
                           _.isNumber(r.code) && r.code < 400 && r.code >= 200 ?
-                          'code-desc text-success' : 'code-desc text-danger'
+                            'code-desc text-success' : 'code-desc text-danger'
                         }
                       >
                         <span className="padding-right-sm">

@@ -9,9 +9,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import type {
-  ModelField
-} from 'restdoc';
+import type { ModelField } from 'restdoc';
 import { parseFieldJson } from '../utils/field-manage';
 import JsonArrayDisplay from './JsonArrayDisplay';
 import JsonObjectDisplay from './JsonObjectDisplay';

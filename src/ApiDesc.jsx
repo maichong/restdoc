@@ -8,9 +8,7 @@
 // @flow
 
 import React from 'react';
-import type {
-  Description
-} from 'restdoc';
+import type { Description } from 'restdoc';
 import BaseInfo from './components/BaseInfo';
 
 type Props = {

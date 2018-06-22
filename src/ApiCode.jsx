@@ -9,9 +9,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import type {
-  Code
-} from 'restdoc';
+import type { Code } from 'restdoc';
 
 type Props = {
   className?: string;

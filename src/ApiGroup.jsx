@@ -8,9 +8,7 @@
 // @flow
 
 import React from 'react';
-import type {
-  Group
-} from 'restdoc';
+import type { Group } from 'restdoc';
 import BaseInfo from './components/BaseInfo';
 
 type Props = {
